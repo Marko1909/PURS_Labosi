@@ -1,5 +1,8 @@
 import requests
 
-response = requests.get('http://ip.jsontest.com/')
+response = requests.delete('http://192.168.86.216/temperatura', id=2)
 
-print(response.json().get('ip'))
+print(response.text)
+print(response.status_code)
+
+#print(response.json().get('temperatura'))
