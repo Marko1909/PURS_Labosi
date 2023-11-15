@@ -1,29 +1,47 @@
-from flask import Flask, request, redirect, url_for, make_response
+from flask import Flask, request, session, redirect, url_for, make_response, render_template
 
 app = Flask("Prva flask aplikacija")
 
 temp_list = []
 
+app.secret_key = '_5#y2L"F4Q8z-n-xec]/'
+
+@app.before_request
+def before_request_func():
+    if request.path == '/login':
+        return
+    if session.get('username') is None:
+        return redirect(url_for('login'))
+
+
 @app.get('/')
 def index():
-    return 'Pocetna stranica'
+    response = render_template('index.html')
+    return response, 200
 
 
 @app.get('/login')
 def login():
-    return 'Stranica za prijavu'
+    response = render_template('login.html')
+    return response, 200
+
+
+@app.get('/logout')
+def logout():
+    session.pop('username')
+    return redirect(url_for('login_page'))
 
 
 @app.post('/login')
 def provjera():
-    username = request.json.get('username')
-    password = request.json.get('password')
+    username = request.form.get('username')
+    password = request.form.get('password')
 
-    if username is not None and password is not None:
-        if username == "PURS" and password == "1234":
-            return redirect(url_for('index'))
-        else:
-            return redirect(url_for('login'))
+    if username == 'PURS' and password == '1234':
+        session['username'] = username
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('login'))
 
 
 @app.post('/temperatura')
