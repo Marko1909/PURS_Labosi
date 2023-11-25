@@ -1,0 +1,22 @@
+body{
+    background-image: url(../static/images/provjera4_background.png);
+}
+
+.main{
+    display: flex;
+    justify-content: center;
+    background-color: white;
+    margin-left: 630px;
+    margin-right: 630px;
+    margin-top: 200px;
+}
+
+.input{
+    justify-content: center;
+    margin: 20px;
+}
+
+.input > input{
+    margin: 10px;
+    border-radius: 3px;
+}

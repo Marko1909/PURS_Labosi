@@ -1,0 +1,35 @@
+body{
+    background-image: url("../static/images/login-background.jpg");
+}
+
+.login{
+    display: flex;
+    justify-content: center;
+    margin-top: 100px;
+}
+
+.login > form{
+    display: grid;
+    grid-template-rows: 1fr;
+    padding: 30px;
+    padding-top: 10px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.login > form label{
+    font-size: small;
+    margin-top: 10px;
+}
+
+.login > form p{
+    font-size: x-large;
+    font-weight: bolder;
+}
+
+.button{
+    margin-top: 20px;
+    width: 75px;
+    height: 25px;
+    justify-self: center;
+}
