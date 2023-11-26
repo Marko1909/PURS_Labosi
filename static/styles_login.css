@@ -1,5 +1,5 @@
 body{
-    background-image: url("../static/images/login-background.jpg");
+    background-image: url(../static/images/login-background.png);
 }
 
 .login{
@@ -8,7 +8,7 @@ body{
     margin-top: 100px;
 }
 
-.login > form{
+.form{
     display: grid;
     grid-template-rows: 1fr;
     padding: 30px;
@@ -17,14 +17,18 @@ body{
     border-radius: 10px;
 }
 
-.login > form label{
+.form > p{
+    font-size: x-large;
+    font-weight: bolder;
+}
+
+.form > label{
     font-size: small;
     margin-top: 10px;
 }
 
-.login > form p{
-    font-size: x-large;
-    font-weight: bolder;
+.form > input{
+    outline: none;
 }
 
 .button{
@@ -32,4 +36,6 @@ body{
     width: 75px;
     height: 25px;
     justify-self: center;
+    background-color: lightblue;
+    border-radius: 5px;
 }
