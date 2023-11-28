@@ -8,6 +8,8 @@ app.secret_key = '_5#y2L"F4Q8z-n-xec]/'
 
 @app.before_request
 def before_request_func():
+    if request.path.startswith('/static'):
+        return #Skip the login check for static files
     if request.path == '/login':
         return
     if session.get('username') is None:
