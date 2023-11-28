@@ -75,6 +75,6 @@ main{
     background-color: #DDDDDD;
 }
 
-.tablica > tbody tr:nth-child(odd){
-    background-color:  #3A454D;
+.tablica > tbody tr:nth-child(even) td {
+    background-color:  #ADADAD;
 }
