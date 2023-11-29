@@ -3,56 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Početna stranica</title>
-    <link rel="stylesheet" href="../static/styles.css">
+    <title>{{naslov}}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 </head>
 
 <body>
     <div class="main">
         <header>
             <div class="div1">
-                <p>Username</p>
-                <img src="../static/images/user-icon.png" alt="User icon", width="70px">
+                <p>{{username}}</p>
+                <img src="{{ url_for('static', filename='images/user-icon.png') }}" alt="User icon", width="70px">
             </div>
 
-            <img src="../static/images/icon.png" alt="Icon", width="70px">
+            <img src="{{ url_for('static', filename='images/icon.png') }}" alt="Icon", width="70px">
                  
         </header>
         
         <nav>  
-            <a href="/logout">Logout</a>
+            <a href="{{ url_for('logout') }}">Logout</a>
             <a href="?id=1">Temperatura</a>
             <a href="?id=2">Vlaga</a>
         </nav>
         
         <main>
+            {% block sadrzaj %}
             <table class="tablica">
                 <thead>
-                    <tr>
-                        <th>Vrijeme</th>
-                        <th>Temperatura</th>
-                        <th>Brisanje</th>
-                    </tr>
+                    <th>Datum</th>
+                    <th>{{tip}}</th>
+                    <th>Brisanje</th>
                 </thead>
-
                 <tbody>
+                    {% for podatak in podatci %}
                     <tr>
-                        <td>Datum1</td>
-                        <td>23</td>
+                        <td>{{podatak.datum}}</td>
+                        <td>{{podatak.vrijednost}}</td>
                         <td><button>Obriši</button></td>
                     </tr>
-                    <tr>
-                        <td>Datum1</td>
-                        <td>23</td>
-                        <td><button>Obriši</button></td>
-                    </tr>
-                    <tr>
-                        <td>Datum1</td>
-                        <td>23</td>
-                        <td><button>Obriši</button></td>
-                    </tr>
+                    {% endfor %}
                 </tbody>
             </table>
+            {% endblock sadrzaj %}
         </main>     
     </div>
 </body>

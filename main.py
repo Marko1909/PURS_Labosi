@@ -1,8 +1,45 @@
 from flask import Flask, request, session, redirect, url_for, make_response, render_template
+import jinja2
 
 app = Flask("Prva flask aplikacija")
 
-temp_list = []
+list_temp = [
+    {
+        'datum': '29.09.2023',
+        'vrijednost': 23
+    },
+    {
+        'datum': '06.10.2023',
+        'vrijednost': 21
+    },
+    {
+        'datum': '13.10.2023',
+        'vrijednost': 19
+    },
+    {
+        'datum': '20.10.2023',
+        'vrijednost': 25
+    }
+]
+
+list_vlage = [
+    {
+        'datum': '29.09.2023',
+        'vrijednost': 43
+    },
+    {
+        'datum': '06.10.2023',
+        'vrijednost': 59
+    },
+    {
+        'datum': '13.10.2023',
+        'vrijednost': 32
+    },
+    {
+        'datum': '20.10.2023',
+        'vrijednost': 21
+    }
+]
 
 app.secret_key = '_5#y2L"F4Q8z-n-xec]/'
 
@@ -18,13 +55,19 @@ def before_request_func():
 
 @app.get('/')
 def index():
-    response = render_template('index.html')
-    return response, 200
+    global list_vlage, list_temp
+    id = request.args.get('id')
+    if id == None or id == '1':
+        response = render_template('index.html', naslov='Početna stranica', username=session.get('username').capitalize(), tip='Temperatura', podatci=list_temp)
+        return response, 200
+    elif id == '2':
+        response = render_template('index.html', naslov='Početna stranica', username=session.get('username').capitalize(), tip='Vlaga', podatci=list_vlage)
+        return response, 200
 
 
 @app.get('/login')
 def login():
-    response = render_template('login.html')
+    response = render_template('login.html', naslov='Stranica za prijavu')
     return response, 200
 
 
@@ -43,7 +86,10 @@ def provjera():
         session['username'] = username
         return redirect(url_for('index'))
     else:
-        return redirect(url_for('login'))
+        return render_template('login.html', naslov='Stranica za prijavu', poruka='Uneseni su pogrešni podatci!')
+
+
+
 
 
 @app.post('/temperatura')

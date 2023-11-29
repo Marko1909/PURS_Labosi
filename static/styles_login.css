@@ -17,7 +17,7 @@ body{
     border-radius: 10px;
 }
 
-.form > p{
+.p_login{
     font-size: x-large;
     font-weight: bolder;
 }
@@ -29,6 +29,13 @@ body{
 
 .form > input{
     outline: none;
+}
+
+.pogreska{
+    height: 5px;
+    justify-self: center;
+    color: red;
+    font-size: small;
 }
 
 .button{

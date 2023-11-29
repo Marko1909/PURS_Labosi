@@ -69,6 +69,10 @@ main{
     color: white;
 }
 
+.tablica > thead th:nth-child(2){
+    width: 100px;
+}
+
 .tablica > tbody, td{
     border: 1px solid black;
     padding: 8px;
