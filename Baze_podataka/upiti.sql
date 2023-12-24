@@ -12,3 +12,4 @@ LEFT JOIN temperatura ON korisnikove_temperature.id_temperature = temperatura.id
 WHERE korisnik.id = 1;
 
 
+SELECT * FROM mysql.user;
