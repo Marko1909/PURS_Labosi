@@ -89,11 +89,9 @@ def put_temperatura():
 
 @app.route('/temperatura/<int:id_podatka>', methods=['POST'])
 def delete(id_podatka):
-    print(id_podatka)
-    if id is not None:
+    if id_podatka is not None:
         query = render_template('deleteTemp.sql', id_temp=id_podatka)
         g.cursor.execute(query)
-        print('Uspješno obrisana temperatura')
         return redirect(url_for('index'))
     else:
         return redirect(url_for('index'))
