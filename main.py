@@ -1,66 +1,47 @@
-from flask import Flask, request, session, redirect, url_for, make_response, render_template
+from flask import Flask, request, session, redirect, url_for, make_response, render_template, g
 import jinja2
+import MySQLdb
+
 
 app = Flask("Prva flask aplikacija")
 
-list_temp = [
-    {
-        'datum': '29.09.2023',
-        'vrijednost': 23
-    },
-    {
-        'datum': '06.10.2023',
-        'vrijednost': 21
-    },
-    {
-        'datum': '13.10.2023',
-        'vrijednost': 19
-    },
-    {
-        'datum': '20.10.2023',
-        'vrijednost': 25
-    }
-]
-
-list_vlage = [
-    {
-        'datum': '29.09.2023',
-        'vrijednost': 43
-    },
-    {
-        'datum': '06.10.2023',
-        'vrijednost': 59
-    },
-    {
-        'datum': '13.10.2023',
-        'vrijednost': 32
-    },
-    {
-        'datum': '20.10.2023',
-        'vrijednost': 21
-    }
-]
 
 app.secret_key = '_5#y2L"F4Q8z-n-xec]/'
 
 @app.before_request
 def before_request_func():
+    g.connection = MySQLdb.connect(host="localhost", user="app", passwd="1234", db="lvj6")
+    g.cursor = g.connection.cursor()
+
     if request.path.startswith('/static'):
         return #Skip the login check for static files
-    if request.path == '/login':
+    if request.path == '/login' or request.path == '/static' or request.path == '/temperatura':
         return
     if session.get('username') is None:
         return redirect(url_for('login'))
+    
+
+@app.after_request
+def after_request_func(response):
+    g.connection.commit()
+    g.connection.close()
+    return response
 
 
 @app.get('/')
 def index():
-    global list_vlage, list_temp
     id = request.args.get('id')
     if id == None or id == '1':
+        g.cursor.execute(render_template('getKorTemp.sql', id_korisnika=session.get('id')))
+        list_temp = g.cursor.fetchall()
+
         response = render_template('index.html', naslov='Početna stranica', username=session.get('username').capitalize(), tip='Temperatura', podatci=list_temp)
         return response, 200
+    
     elif id == '2':
+        g.cursor.execute(render_template('getKorVlage.sql', id_korisnika=session.get('id')))
+        list_vlage = g.cursor.fetchall()
+
         response = render_template('index.html', naslov='Početna stranica', username=session.get('username').capitalize(), tip='Vlaga', podatci=list_vlage)
         return response, 200
 
@@ -79,49 +60,44 @@ def logout():
 
 @app.post('/login')
 def provjera():
-    username = request.form.get('username')
-    password = request.form.get('password')
+    g.cursor.execute(render_template('selectKorisnik.sql', user=request.form.get('username'), pasw=request.form.get('password')))
+    korisnik = g.cursor.fetchall()
 
-    if username == 'PURS' and password == '1234':
-        session['username'] = username
+    if korisnik != ():
+        session['username'] = korisnik[0][3]
+        session['id'] = korisnik[0][0]
         return redirect(url_for('index'))
     else:
         return render_template('login.html', naslov='Stranica za prijavu', poruka='Uneseni su pogrešni podatci!')
 
 
-
-
-
 @app.post('/temperatura')
-def temperatura():
-    temp = request.json.get('temperatura')
+def put_temperatura():
+    global temperatura
+    response = make_response()
 
-    if temp is not None:
-        global temp_list
-        temp_list.append(temp)
-        return 'Uspješno ste postavili temperaturu', 201
+    if request.json.get('temperatura') is not None:
+        query = render_template('writeTemperature.sql', value=request.json.get('temperatura'))
+        g.cursor.execute(query)
+        response.data = 'Uspješno ste postavili temperaturu'
+        response.status_code = 201
     else:
-        return 'Niste upisali ispravan ključ', 404
+        response.data = 'Niste napisali ispravan ključ'
+        response.status_code = 404
+    return response
 
 
-@app.get('/temperatura')
-def zadnja_temp():
-    global temp_list
-    json = {'temperatura': temp_list[-1]}
-    resp = make_response(json, 202)
-    return resp
-
-
-@app.delete('/temperatura')
-def delete():
-    global temp_list
-    id = request.args.get('id')    
-    
+@app.route('/temperatura/<int:id_podatka>', methods=['POST'])
+def delete(id_podatka):
+    print(id_podatka)
     if id is not None:
-        temp_list.remove(int(id)-1)
-        return 'Uspješno ste obrisali temperaturu', 202
+        query = render_template('deleteTemp.sql', id_temp=id_podatka)
+        g.cursor.execute(query)
+        print('Uspješno obrisana temperatura')
+        return redirect(url_for('index'))
     else:
-        return 'upisali ste neispravan ključ', 404
+        return redirect(url_for('index'))
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=80)
