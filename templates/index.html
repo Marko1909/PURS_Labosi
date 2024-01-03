@@ -40,7 +40,7 @@
                         <td>{{podatak[1]}}</td>
                         <td>{{podatak[2]}}</td>
                         <td>
-                            <form action="{{ url_for('delete', id_podatka=podatak[0]) }}" method="POST" >
+                            <form action="{{ url_for('delete', id_stupca=podatak[0], id_podatka=tip_podatka[0]) }}" method="POST" >
                                 <input type="submit" value="Obriši" class="button">
                             </form>
                         </td>

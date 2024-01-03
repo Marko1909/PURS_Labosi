@@ -35,14 +35,14 @@ def index():
         g.cursor.execute(render_template('getKorTemp.sql', id_korisnika=session.get('id')))
         list_temp = g.cursor.fetchall()
 
-        response = render_template('index.html', naslov='Početna stranica', username=session.get('username').capitalize(), tip='Temperatura', podatci=list_temp)
+        response = render_template('index.html', naslov='Početna stranica', username=session.get('username').capitalize(), tip='Temperatura', podatci=list_temp, tip_podatka=id)
         return response, 200
     
     elif id == '2':
         g.cursor.execute(render_template('getKorVlage.sql', id_korisnika=session.get('id')))
         list_vlage = g.cursor.fetchall()
 
-        response = render_template('index.html', naslov='Početna stranica', username=session.get('username').capitalize(), tip='Vlaga', podatci=list_vlage)
+        response = render_template('index.html', naslov='Početna stranica', username=session.get('username').capitalize(), tip='Vlaga', podatci=list_vlage, tip_podatka=id)
         return response, 200
 
 
@@ -87,14 +87,26 @@ def put_temperatura():
     return response
 
 
-@app.route('/temperatura/<int:id_podatka>', methods=['POST'])
-def delete(id_podatka):
-    if id_podatka is not None:
-        query = render_template('deleteTemp.sql', id_temp=id_podatka)
+@app.route('/temperatura/<int:id_stupca>', methods=['POST'])
+def delete(id_stupca):
+    id_podatka = request.args.get('id_podatka')
+
+    if id_podatka == '' or id_podatka == '1' and id_stupca is not None:
+        query = render_template('deleteTemp.sql', id_temp=id_stupca)
+        g.cursor.execute(query)  
+        if id_podatka == '1':
+            return redirect(url_for('index', id=id_podatka))
+        else:
+            return redirect(url_for('index'))
+
+    elif id_podatka == '2' and id_stupca is not None:
+        query = render_template('deleteVlaga.sql', id_vlage=id_stupca)
         g.cursor.execute(query)
-        return redirect(url_for('index'))
+        return redirect(url_for('index', id=id_podatka))
+    
     else:
-        return redirect(url_for('index'))
+        return
+
 
 
 if __name__ == '__main__':
