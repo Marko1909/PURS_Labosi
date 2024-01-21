@@ -5,12 +5,12 @@
 
 #define POT 32
 
-void setup() {
+void setup3() {
   pinMode(GREEN_LED, OUTPUT);
   pinMode(BLUE_LED, OUTPUT);
 }
 
-void loop() {
+void loop3() {
     int delaytime;
 
     if(analogRead(POT) > 2000){

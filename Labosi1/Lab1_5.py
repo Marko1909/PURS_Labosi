@@ -1,8 +1,8 @@
 import requests
 
-payload = {"temperatura": '31.9'}
+response = requests.get('http://192.168.1.100')
 
-response = requests.post('http://192.168.1.100/temperatura', json=payload)
+payload = {"temperatura": 31.9}
 
-print(response.text)
-print(response.status_code)
+response = requests.post('http://192.168.1.100', json=payload)
+
